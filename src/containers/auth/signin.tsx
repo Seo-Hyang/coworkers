@@ -72,6 +72,30 @@ function SignInPage() {
     }
   };
 
+  const previewLoginSubmit = async () => {
+    const email = 'cha@email.com';
+    const password = 'chA1234!!';
+
+    try {
+      const response = await login({ email, password });
+      const { user: loggedInUser, accessToken, refreshToken } = response;
+      setLogin(loggedInUser, accessToken, refreshToken, null);
+
+      setError(null);
+      router.push('/groups');
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        const errorMessage =
+          err.response?.data?.message || '서버 통신 중 오류가 발생했습니다.';
+        setError(errorMessage);
+      } else if (err instanceof Error) {
+        setError(err.message || '예기치 못한 오류 발생');
+      } else {
+        setError('알 수 없는 오류 발생');
+      }
+    }
+  };
+
   // // 임의의 state 값 생성 함수 (CSRF 방지용)
   // const generateState = () => {
   //   return Math.random().toString(36).substring(2);
@@ -170,6 +194,24 @@ function SignInPage() {
             </Link>
           </span>
         </form>
+        <div className='my-24'>
+          <div className='mb-24 flex items-center'>
+            <div className='flex-grow border-t border-border-primary dark:border-border-primary-dark' />
+            <div className='border-border-primary dark:border-border-primary-dark mx-24 text-text-primary dark:text-text-primary-dark'>
+              OR
+            </div>
+            <div className='flex-grow border-t border-border-primary dark:border-border-primary-dark' />
+          </div>
+          <Button
+            type='submit'
+            color='outline'
+            size='lg'
+            className='w-full'
+            onClick={previewLoginSubmit}
+          >
+            시연 로그인
+          </Button>
+        </div>
         <div className='flex items-center'>
           <div className='flex-grow border-t border-border-primary dark:border-border-primary-dark' />
           <div className='border-border-primary dark:border-border-primary-dark mx-24 text-text-primary dark:text-text-primary-dark'>
